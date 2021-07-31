@@ -242,7 +242,7 @@ bool TTN_esp32::personalize(const char* devAddr, const char* nwkSKey, const char
     ByteArrayUtils::hexStrToBin(devAddr, dev_adr, 4);
     devaddr_t dev_addr = dev_adr[0] << 24 | dev_adr[1] << 16 | dev_adr[2] << 8 | dev_adr[3];
 #ifdef DEBUG
-    ESP-LOGI(TAG,"Dev adr str: %s", devAddr);
+    ESP_LOGI(TAG,"Dev adr str: %s", devAddr);
     ESP_LOGI(TAG,"Dev adr int: %X", dev_addr);
 #endif // DEBUG
     personalize(0x13, dev_addr, net_session_key, app_session_key);
