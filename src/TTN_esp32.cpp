@@ -567,6 +567,16 @@ void TTN_esp32::setTXInterval(uint32_t interval = 60)
     txInterval = interval;
 }
 
+void TTN_esp32::setAdaptiveDataRate(bool enabled)
+{
+    LMIC_setAdrMode(enabled); 
+}
+
+bool TTN_esp32::getAdaptiveDataRate()
+{
+    return LMIC.adrEnabled != 0;
+}
+
 size_t TTN_esp32::getAppEui(char* buffer, size_t size)
 {
     if (size < 8)

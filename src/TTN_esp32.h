@@ -329,6 +329,17 @@ public:
     bool setDataRate(uint8_t rate = 7);
 
     ///
+    /// 
+    /// 
+    /// 
+    /// @param enabled 
+    ///
+    void setAdaptiveDataRate(bool enabled = false);
+
+    bool getAdaptiveDataRate();
+
+
+    ///
     /// Set the interval at which to send cyclic data
     ///
     /// \note {You must call \ref sendBytesAtInterval first, otherwise this will have no effect}
