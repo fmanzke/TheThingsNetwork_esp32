@@ -298,6 +298,11 @@ void TTN_esp32::onEvent(void (*callback)(const ev_t event))
     eventCallback = callback;
 }
 
+void TTN_esp32::onConfirm(void (*callback)())
+{
+    confirmCallback = callback;
+}
+
 bool TTN_esp32::isJoined()
 {
     return joined;
@@ -986,12 +991,18 @@ void onEvent(ev_t event)
         break;
     case EV_TXCOMPLETE:
         sequenceNumberUp = LMIC.seqnoUp;
-#ifdef DEBUG
+        //TODO : gestion ACK
         if (LMIC.txrxFlags & TXRX_ACK)
         {
+            Serial.print(os_getTime());
+            Serial.print(": ");
             Serial.println(F("Received ack"));
+            if (ttn->confirmCallback)
+            {
+                ttn->confirmCallback();
+            }
+            
         }
-#endif // DEBUG
         if (LMIC.dataLen)
         {
 #ifdef DEBUG

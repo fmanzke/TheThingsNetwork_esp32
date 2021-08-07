@@ -211,6 +211,12 @@ public:
     ///
     void onEvent(void (*callback)(const ev_t event));
 
+
+    ///
+    void onConfirm(void (*callback)());
+    
+
+
     ///
     /// Check whether we have joined TTN
     /// @return True when joined, false if not
@@ -421,6 +427,7 @@ private:
     static void loopStack(void* parameter);
     void (*messageCallback)(const uint8_t* payload, size_t size, int rssi) = NULL;
     void (*eventCallback)(const ev_t event) = NULL;
+    void (*confirmCallback)() = NULL;
 
     ///
     /// LMIC callback for getting the application key
