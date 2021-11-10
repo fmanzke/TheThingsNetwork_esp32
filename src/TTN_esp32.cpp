@@ -242,7 +242,7 @@ bool TTN_esp32::personalize(const char* devAddr, const char* nwkSKey, const char
     ByteArrayUtils::hexStrToBin(devAddr, dev_adr, 4);
     devaddr_t dev_addr = dev_adr[0] << 24 | dev_adr[1] << 16 | dev_adr[2] << 8 | dev_adr[3];
 #ifdef DEBUG
-    ESP-LOGI(TAG,"Dev adr str: %s", devAddr);
+    ESP_LOGI(TAG,"Dev adr str: %s", devAddr);
     ESP_LOGI(TAG,"Dev adr int: %X", dev_addr);
 #endif // DEBUG
     personalize(0x13, dev_addr, net_session_key, app_session_key);
@@ -296,6 +296,11 @@ void TTN_esp32::onMessage(void (*callback)(const uint8_t* payload, size_t size, 
 void TTN_esp32::onEvent(void (*callback)(const ev_t event))
 {
     eventCallback = callback;
+}
+
+void TTN_esp32::onConfirm(void (*callback)())
+{
+    confirmCallback = callback;
 }
 
 bool TTN_esp32::isJoined()
@@ -565,6 +570,16 @@ void TTN_esp32::setTXInterval(uint32_t interval = 60)
 {
     /*_interval=INTERVAL;*/
     txInterval = interval;
+}
+
+void TTN_esp32::setAdaptiveDataRate(bool enabled)
+{
+    LMIC_setAdrMode(enabled); 
+}
+
+bool TTN_esp32::getAdaptiveDataRate()
+{
+    return LMIC.adrEnabled != 0;
 }
 
 size_t TTN_esp32::getAppEui(char* buffer, size_t size)
@@ -976,12 +991,18 @@ void onEvent(ev_t event)
         break;
     case EV_TXCOMPLETE:
         sequenceNumberUp = LMIC.seqnoUp;
-#ifdef DEBUG
+        //TODO : gestion ACK
         if (LMIC.txrxFlags & TXRX_ACK)
         {
+            Serial.print(os_getTime());
+            Serial.print(": ");
             Serial.println(F("Received ack"));
+            if (ttn->confirmCallback)
+            {
+                ttn->confirmCallback();
+            }
+            
         }
-#endif // DEBUG
         if (LMIC.dataLen)
         {
 #ifdef DEBUG

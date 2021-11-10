@@ -211,6 +211,12 @@ public:
     ///
     void onEvent(void (*callback)(const ev_t event));
 
+
+    ///
+    void onConfirm(void (*callback)());
+    
+
+
     ///
     /// Check whether we have joined TTN
     /// @return True when joined, false if not
@@ -329,6 +335,17 @@ public:
     bool setDataRate(uint8_t rate = 7);
 
     ///
+    /// 
+    /// 
+    /// 
+    /// @param enabled 
+    ///
+    void setAdaptiveDataRate(bool enabled = false);
+
+    bool getAdaptiveDataRate();
+
+
+    ///
     /// Set the interval at which to send cyclic data
     ///
     /// \note {You must call \ref sendBytesAtInterval first, otherwise this will have no effect}
@@ -410,6 +427,7 @@ private:
     static void loopStack(void* parameter);
     void (*messageCallback)(const uint8_t* payload, size_t size, int rssi) = NULL;
     void (*eventCallback)(const ev_t event) = NULL;
+    void (*confirmCallback)() = NULL;
 
     ///
     /// LMIC callback for getting the application key
